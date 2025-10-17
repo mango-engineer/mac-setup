@@ -361,7 +361,9 @@ mkt() {
 }
 
 # Git clone and cd into directory
-gcl() {
+# Note: 'gcl' is already an alias from Oh My Zsh git plugin
+# Using 'gclcd' (git clone + cd) instead
+gclcd() {
     git clone "$1" && cd "$(basename "$1" .git)"
 }
 
