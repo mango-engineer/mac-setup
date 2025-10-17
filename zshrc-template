@@ -47,31 +47,41 @@ setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_SPACE
 setopt SHARE_HISTORY
 
-# Plugins - Powerful collection
+# Plugins - Fast & Essential Collection
+# Note: Removed slow plugins (docker, kubectl, npm, yarn, python, pip, aws, command-not-found)
+# Their functionality is covered by aliases and functions below
 plugins=(
-  git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  docker
-  kubectl
-  npm
-  yarn
-  python
-  pip
-  brew
-  macos
-  aws
-  colored-man-pages
-  command-not-found
-  copyfile
-  copypath
-  extract
-  sudo
-  web-search
+  git                      # Git integration and aliases
+  brew                     # Homebrew completions
+  macos                    # macOS-specific shortcuts
+  colored-man-pages        # Colorized man pages
+  copyfile                 # Copy file contents to clipboard
+  copypath                 # Copy file path to clipboard
+  extract                  # Smart archive extraction
+  sudo                     # Press ESC twice to add sudo
+  web-search               # Search web from terminal (google, stackoverflow, github, etc.)
+  zsh-autosuggestions      # Fish-like autosuggestions (Homebrew)
+  zsh-syntax-highlighting  # Fish-like syntax highlighting (Homebrew)
 )
 
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
+
+# ============================================================================
+# Optional Slow Plugins (Uncomment if needed)
+# ============================================================================
+# Warning: These plugins can significantly slow down shell startup (500ms-2s)
+# Consider enabling only if you frequently need their completions
+#
+# plugins+=(docker)      # Docker completions
+# plugins+=(kubectl)     # Kubernetes completions
+# plugins+=(npm)         # NPM completions
+# plugins+=(yarn)        # Yarn completions
+# plugins+=(aws)         # AWS CLI completions
+# plugins+=(python)      # Python completions
+# plugins+=(pip)         # Pip completions
+#
+# Alternative: Use aliases and functions below instead (instant, no slowdown)
 
 # ============================================================================
 # User Configuration
