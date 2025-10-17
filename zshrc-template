@@ -1,5 +1,5 @@
 # ============================================================================
-# Standard .zshrc Configuration
+# Powerful .zshrc Configuration
 # Part of mac-setup: https://github.com/mango-engineer/mac-setup
 # ============================================================================
 
@@ -12,7 +12,9 @@ fi
 # PATH Configuration
 # ============================================================================
 export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 
 # ============================================================================
 # Oh My Zsh Configuration
@@ -23,17 +25,49 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Update settings
-zstyle ':omz:update' mode reminder  # Remind to update
-zstyle ':omz:update' frequency 13   # Check every 13 days
+zstyle ':omz:update' mode reminder
+zstyle ':omz:update' frequency 13
+
+# Case-sensitive completion
+CASE_SENSITIVE="false"
+HYPHEN_INSENSITIVE="true"
+
+# Display red dots while waiting for completion
+COMPLETION_WAITING_DOTS="true"
+
+# Disable marking untracked files under VCS as dirty (faster for large repos)
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # History settings
 HIST_STAMPS="yyyy-mm-dd"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_SPACE
+setopt SHARE_HISTORY
 
-# Plugins
+# Plugins - Powerful collection
 plugins=(
   git
   zsh-autosuggestions
   zsh-syntax-highlighting
+  docker
+  kubectl
+  npm
+  yarn
+  python
+  pip
+  brew
+  macos
+  aws
+  colored-man-pages
+  command-not-found
+  copyfile
+  copypath
+  extract
+  sudo
+  web-search
 )
 
 # Load Oh My Zsh
@@ -49,9 +83,18 @@ export VISUAL='nano'
 
 # Language environment
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # Compilation flags
 export ARCHFLAGS="-arch $(uname -m)"
+
+# Better less
+export LESS='-R -i -M -X -F'
+export PAGER='less'
+
+# Colored output
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
 
 # ============================================================================
 # NVM (Node Version Manager)
@@ -60,11 +103,24 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 
+# Lazy load NVM for faster shell startup (uncomment if you want faster startup)
+# alias nvm="unalias nvm; [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"; nvm $@"
+
+# ============================================================================
+# Anaconda/Conda Configuration
+# ============================================================================
+# >>> conda initialize >>>
+# If Anaconda is installed, this will be auto-configured
+# You may need to run: conda init zsh
+# <<< conda initialize <<<
+
 # ============================================================================
 # Zsh Plugins (Homebrew installed)
 # ============================================================================
 # Zsh Autosuggestions
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#808080"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # Zsh Syntax Highlighting
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -76,45 +132,170 @@ source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # ============================================================================
-# Aliases
+# Aliases - Shell & Navigation
 # ============================================================================
 # Common shortcuts
 alias zshconfig="nano ~/.zshrc"
 alias ohmyzsh="nano ~/.oh-my-zsh"
-alias zshreload="source ~/.zshrc"
+alias zshreload="exec zsh"
+alias zshedit="nano ~/.zshrc && exec zsh"
 
-# Git aliases
-alias gs="git status"
-alias ga="git add"
-alias gc="git commit"
-alias gp="git push"
-alias gl="git log --oneline -10"
-
-# Better ls
-alias ll="ls -lah"
-alias la="ls -A"
-alias l="ls -CF"
-
-# Safety nets
-alias rm="rm -i"
-alias cp="cp -i"
-alias mv="mv -i"
+# Better ls with eza (if installed) or fallback to ls
+if command -v eza &> /dev/null; then
+    alias ls="eza --icons --group-directories-first"
+    alias ll="eza -lah --icons --group-directories-first"
+    alias la="eza -a --icons --group-directories-first"
+    alias lt="eza --tree --level=2 --icons"
+    alias lta="eza --tree --level=2 -a --icons"
+else
+    alias ll="ls -lah"
+    alias la="ls -A"
+    alias l="ls -CF"
+fi
 
 # Navigation
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ~="cd ~"
+alias -- -="cd -"
 
-# Homebrew
-alias brewup="brew update && brew upgrade && brew cleanup"
-alias brewcheck="brew doctor"
+# Directory shortcuts
+alias dl="cd ~/Downloads"
+alias dt="cd ~/Desktop"
+alias docs="cd ~/Documents"
+alias dev="cd ~/Developer"
 
-# Development
-alias py="python3"
-alias pip="pip3"
+# Safety nets
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+alias mkdir="mkdir -pv"
 
 # ============================================================================
-# Custom Functions
+# Aliases - Git (Enhanced)
+# ============================================================================
+alias gs="git status"
+alias gss="git status -s"
+alias ga="git add"
+alias gaa="git add --all"
+alias gc="git commit"
+alias gcm="git commit -m"
+alias gca="git commit --amend"
+alias gp="git push"
+alias gpl="git pull"
+alias gf="git fetch"
+alias gl="git log --oneline -10"
+alias gll="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gd="git diff"
+alias gdc="git diff --cached"
+alias gb="git branch"
+alias gba="git branch -a"
+alias gco="git checkout"
+alias gcb="git checkout -b"
+alias gm="git merge"
+alias gr="git remote -v"
+alias greset="git reset --hard HEAD"
+alias gclean="git clean -fd"
+alias gstash="git stash"
+alias gstashp="git stash pop"
+alias gtag="git tag"
+alias gundo="git reset --soft HEAD~1"
+
+# ============================================================================
+# Aliases - Homebrew
+# ============================================================================
+alias brewup="brew update && brew upgrade && brew cleanup"
+alias brewcheck="brew doctor"
+alias brewlist="brew list"
+alias brewinfo="brew info"
+alias brewsearch="brew search"
+alias brewclean="brew cleanup -s && brew autoremove"
+
+# ============================================================================
+# Aliases - Development
+# ============================================================================
+# Python
+alias py="python3"
+alias python="python3"
+alias pip="pip3"
+alias venv="python3 -m venv"
+alias activate="source venv/bin/activate"
+
+# Node/NPM/Yarn
+alias ni="npm install"
+alias nid="npm install --save-dev"
+alias nig="npm install -g"
+alias nr="npm run"
+alias ns="npm start"
+alias nt="npm test"
+alias nb="npm run build"
+alias yi="yarn install"
+alias ya="yarn add"
+alias yad="yarn add --dev"
+alias yr="yarn run"
+alias ys="yarn start"
+alias yt="yarn test"
+alias yb="yarn build"
+
+# Docker
+alias d="docker"
+alias dc="docker-compose"
+alias dps="docker ps"
+alias dpsa="docker ps -a"
+alias di="docker images"
+alias dex="docker exec -it"
+alias dlog="docker logs -f"
+alias dstop="docker stop"
+alias drm="docker rm"
+alias drmi="docker rmi"
+alias dprune="docker system prune -a --volumes"
+alias dclean="docker container prune && docker image prune && docker volume prune"
+
+# Kubernetes
+alias k="kubectl"
+alias kgp="kubectl get pods"
+alias kgs="kubectl get services"
+alias kgd="kubectl get deployments"
+alias kgn="kubectl get nodes"
+alias kdp="kubectl describe pod"
+alias kds="kubectl describe service"
+alias kdd="kubectl describe deployment"
+alias kl="kubectl logs -f"
+alias kex="kubectl exec -it"
+alias ka="kubectl apply -f"
+alias kdel="kubectl delete"
+alias kctx="kubectl config current-context"
+alias kns="kubectl config set-context --current --namespace"
+
+# AWS CLI
+alias awsls="aws s3 ls"
+alias awsprofile="export AWS_PROFILE="
+alias awswho="aws sts get-caller-identity"
+
+# Postgres
+alias pgstart="brew services start postgresql"
+alias pgstop="brew services stop postgresql"
+alias pgrestart="brew services restart postgresql"
+
+# Quick edit common files
+alias hosts="sudo nano /etc/hosts"
+alias sshconfig="nano ~/.ssh/config"
+alias gitconfig="nano ~/.gitconfig"
+
+# System
+alias flush="sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder"
+alias update="sudo softwareupdate -i -a; brewup"
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+
+# Network
+alias myip="curl -s ifconfig.me"
+alias localip="ipconfig getifaddr en0"
+alias ports="lsof -i -P | grep LISTEN"
+
+# ============================================================================
+# Custom Functions - Enhanced
 # ============================================================================
 
 # Create directory and cd into it
@@ -122,9 +303,19 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# Quick grep
+# Quick grep with color
 qgrep() {
-    grep -r --color=auto "$1" .
+    grep -rn --color=auto "$1" .
+}
+
+# Find file by name
+ff() {
+    find . -type f -name "*$1*"
+}
+
+# Find directory by name
+fd() {
+    find . -type d -name "*$1*"
 }
 
 # Extract various archive types
@@ -149,8 +340,207 @@ extract() {
     fi
 }
 
+# Quick backup of file
+backup() {
+    cp "$1"{,.backup-$(date +%Y%m%d-%H%M%S)}
+}
+
+# Create a new directory and enter it
+mkt() {
+    mkdir -p "$1" && cd "$1" && touch "$2"
+}
+
+# Git clone and cd into directory
+gcl() {
+    git clone "$1" && cd "$(basename "$1" .git)"
+}
+
+# Quick HTTP server
+serve() {
+    local port="${1:-8000}"
+    python3 -m http.server "$port"
+}
+
+# Show disk usage of current directory
+duu() {
+    du -sh * | sort -h
+}
+
+# Process management
+psg() {
+    ps aux | grep -v grep | grep -i -e VSZ -e "$1"
+}
+
+# Kill process by name
+killp() {
+    ps aux | grep -i "$1" | awk '{print $2}' | xargs kill -9
+}
+
+# Docker helpers
+dsh() {
+    docker exec -it "$1" /bin/bash
+}
+
+dzsh() {
+    docker exec -it "$1" /bin/zsh
+}
+
+dlog() {
+    docker logs -f "$1"
+}
+
+# Git helpers
+gitignore() {
+    curl -sL "https://www.gitignore.io/api/$1" >> .gitignore
+}
+
+gcommit() {
+    git add --all && git commit -m "$1" && git push
+}
+
+# Create Python virtual environment
+pyvenv() {
+    python3 -m venv "${1:-.venv}"
+    source "${1:-.venv}/bin/activate"
+    pip install --upgrade pip
+}
+
+# Activate common virtual environment names
+va() {
+    if [ -d "venv" ]; then
+        source venv/bin/activate
+    elif [ -d ".venv" ]; then
+        source .venv/bin/activate
+    elif [ -d "env" ]; then
+        source env/bin/activate
+    else
+        echo "No virtual environment found (venv, .venv, or env)"
+    fi
+}
+
+# Quick weather
+weather() {
+    curl -s "wttr.in/${1:-}"
+}
+
+# Show history stats
+histats() {
+    history | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl |  head -n20
+}
+
+# Quick note taking
+note() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S'): $*" >> ~/notes.txt
+}
+
+notes() {
+    if [ "$1" ]; then
+        grep -i "$1" ~/notes.txt
+    else
+        cat ~/notes.txt
+    fi
+}
+
+# Port checker
+port() {
+    lsof -i :"$1"
+}
+
+# Kubernetes context switcher
+kctx() {
+    if [ -z "$1" ]; then
+        kubectl config get-contexts
+    else
+        kubectl config use-context "$1"
+    fi
+}
+
+# Docker cleanup
+dcleanall() {
+    echo "Stopping all containers..."
+    docker stop $(docker ps -aq) 2>/dev/null
+    echo "Removing all containers..."
+    docker rm $(docker ps -aq) 2>/dev/null
+    echo "Removing all images..."
+    docker rmi $(docker images -q) 2>/dev/null
+    echo "Removing all volumes..."
+    docker volume rm $(docker volume ls -q) 2>/dev/null
+    echo "Docker cleanup complete!"
+}
+
+# Show top 10 largest files
+largest() {
+    du -ah . | sort -rh | head -n ${1:-10}
+}
+
+# Count files in directory
+count() {
+    echo "Files: $(find . -type f | wc -l)"
+    echo "Directories: $(find . -type d | wc -l)"
+}
+
+# JSON pretty print
+json() {
+    if [ -t 0 ]; then
+        python3 -m json.tool <<< "$*" | pygmentize -l json
+    else
+        python3 -m json.tool | pygmentize -l json
+    fi
+}
+
+# URL encode
+urlencode() {
+    python3 -c "import urllib.parse; print(urllib.parse.quote('$1'))"
+}
+
+# URL decode
+urldecode() {
+    python3 -c "import urllib.parse; print(urllib.parse.unquote('$1'))"
+}
+
+# Generate random password
+genpass() {
+    openssl rand -base64 ${1:-16}
+}
+
+# ============================================================================
+# Key Bindings
+# ============================================================================
+# Use vim keys in tab complete menu
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+
+# Better history search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ============================================================================
+# Completion Enhancements
+# ============================================================================
+# Case-insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# Colored completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# Menu selection
+zstyle ':completion:*' menu select
+
+# Cache completions
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# ============================================================================
+# Startup Message (Optional)
+# ============================================================================
+# Uncomment to show system info on startup
+# echo "🚀 $(whoami)@$(hostname) | $(date '+%Y-%m-%d %H:%M:%S')"
+# echo "💻 $(uname -s) $(uname -m) | Shell: $SHELL"
+# [ -f ~/notes.txt ] && echo "📝 You have $(wc -l < ~/notes.txt) notes"
+
 # ============================================================================
 # Personal Customizations
 # ============================================================================
 # Add your personal aliases, functions, and configurations below this line
-
