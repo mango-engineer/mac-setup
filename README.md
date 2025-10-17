@@ -29,6 +29,7 @@ This repository contains an automated setup script for macOS development environ
 - **MesloLGS NF** - Nerd Font for terminal
 - **Notion** - All-in-one workspace
 - **pgAdmin 4** - PostgreSQL database management
+- **Postgres.app** - PostgreSQL database server for macOS
 - **Postman** - API development platform
 - **Rectangle** - Window management utility
 - **Slack** - Team collaboration tool

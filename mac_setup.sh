@@ -171,6 +171,7 @@ CASKS=(
     "iterm2"                # Terminal emulator
     "notion"                # Note-taking and collaboration
     "pgadmin4"              # PostgreSQL admin tool
+    "postgres-unofficial"   # PostgreSQL database server (Postgres.app)
     "postman"               # API development tool
     "rectangle"             # Window management tool
     "slack"                 # Team communication

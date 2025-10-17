@@ -30,6 +30,7 @@ cask "google-chrome"         # Web browser
 cask "iterm2"                # Terminal emulator
 cask "notion"                # Note-taking and collaboration
 cask "pgadmin4"              # PostgreSQL admin tool
+cask "postgres-unofficial"   # PostgreSQL database server (Postgres.app)
 cask "postman"               # API development tool
 cask "rectangle"             # Window management tool
 cask "slack"                 # Team communication
