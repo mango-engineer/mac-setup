@@ -37,6 +37,7 @@ This repository contains an automated setup script for macOS development environ
 
 ### Additional Configuration
 - **Oh My Zsh** - Zsh framework for managing configurations
+- **Standardized .zshrc** - Consistent shell configuration across all installations
 - **Zsh Plugins** - Autosuggestions and syntax highlighting for enhanced terminal experience
 - **NVM Configuration** - Automatic Node.js version management
 - **macOS System Preferences** - Developer-friendly system settings
@@ -108,11 +109,19 @@ nvm use --lts
 p10k configure
 ```
 
-### 5. iTerm2 Font Configuration
+### 5. Verify .zshrc Configuration
+The setup script automatically installs a standardized `.zshrc` configuration:
+- Your existing `.zshrc` is backed up to `~/.zshrc.backup.TIMESTAMP`
+- A new standardized `.zshrc` is installed from the template
+- All users will have the same shell configuration
+
+To customize your shell, add your personal configurations at the bottom of `~/.zshrc` under the "Personal Customizations" section.
+
+### 6. iTerm2 Font Configuration
 - Open iTerm2 → Preferences → Profiles → Text
 - Set Font to "MesloLGS NF" (already installed via Homebrew)
 
-### 6. Using Zsh Plugins
+### 7. Using Zsh Plugins
 After restarting your terminal, you'll have these features:
 
 **Zsh Autosuggestions:**
@@ -130,6 +139,8 @@ After restarting your terminal, you'll have these features:
 ## 📝 Script Features
 
 - ✅ **Idempotent** - Safe to run multiple times without issues
+- ✅ **Standardized configuration** - Ensures consistent `.zshrc` across all Macs
+- ✅ **Automatic backups** - Backs up existing configurations before changes
 - ✅ **Robust error handling** - Continues even if individual packages fail
 - ✅ **Smart detection** - Skips already installed packages automatically
 - ✅ **Color-coded output** - Easy to follow progress with visual feedback

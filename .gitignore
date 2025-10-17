@@ -36,6 +36,7 @@ Temporary Items
 *.bak
 *.backup
 *.old
+.zshrc.backup.*
 
 # Logs
 *.log

@@ -212,40 +212,37 @@ else
 fi
 
 ###############################################################################
-# 7. Configure Zsh Plugins
+# 7. Configure .zshrc (Standardized Configuration)
 ###############################################################################
-print_section "7. Configure Zsh Plugins"
+print_section "7. Configure .zshrc"
 
-# Configure zsh-autosuggestions
-ZSH_AUTOSUGGESTIONS='
-# Zsh Autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh'
+# Path to template in the repo
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ZSHRC_TEMPLATE="$SCRIPT_DIR/zshrc-template"
 
-if ! grep -q "zsh-autosuggestions.zsh" "$HOME/.zshrc" 2>/dev/null; then
-    print_info "Adding zsh-autosuggestions to .zshrc..."
-    if echo "$ZSH_AUTOSUGGESTIONS" >> "$HOME/.zshrc" 2>&1; then
-        print_success "zsh-autosuggestions configured"
+if [ -f "$ZSHRC_TEMPLATE" ]; then
+    # Backup existing .zshrc if it exists
+    if [ -f "$HOME/.zshrc" ]; then
+        BACKUP_FILE="$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+        print_info "Backing up existing .zshrc to: $BACKUP_FILE"
+        if cp "$HOME/.zshrc" "$BACKUP_FILE" 2>&1; then
+            print_success "Backup created"
+        else
+            print_warning "Failed to create backup, but continuing..."
+        fi
+    fi
+    
+    # Copy template to ~/.zshrc
+    print_info "Installing standardized .zshrc configuration..."
+    if cp "$ZSHRC_TEMPLATE" "$HOME/.zshrc" 2>&1; then
+        print_success "Standardized .zshrc installed"
+        print_info "All configurations are now consistent across installations"
     else
-        print_warning "Failed to configure zsh-autosuggestions"
+        print_error "Failed to install .zshrc template"
     fi
 else
-    print_success "zsh-autosuggestions already configured in .zshrc"
-fi
-
-# Configure zsh-syntax-highlighting
-ZSH_SYNTAX_HIGHLIGHTING='
-# Zsh Syntax Highlighting
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
-
-if ! grep -q "zsh-syntax-highlighting.zsh" "$HOME/.zshrc" 2>/dev/null; then
-    print_info "Adding zsh-syntax-highlighting to .zshrc..."
-    if echo "$ZSH_SYNTAX_HIGHLIGHTING" >> "$HOME/.zshrc" 2>&1; then
-        print_success "zsh-syntax-highlighting configured"
-    else
-        print_warning "Failed to configure zsh-syntax-highlighting"
-    fi
-else
-    print_success "zsh-syntax-highlighting already configured in .zshrc"
+    print_warning ".zshrc template not found in repository"
+    print_info "Manual configuration may be needed"
 fi
 
 ###############################################################################
