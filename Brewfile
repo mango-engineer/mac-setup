@@ -14,6 +14,7 @@ brew "git"
 brew "nvm"
 brew "powerlevel10k"
 brew "python@3.13"
+brew "uv"
 brew "wget"
 brew "yarn"
 
@@ -35,7 +36,6 @@ cask "cursor"
 cask "visual-studio-code"
 
 # Development Tools
-cask "anaconda"
 cask "iterm2"
 cask "pgadmin4"
 cask "postgres-unofficial"

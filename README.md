@@ -5,7 +5,7 @@ Automated setup script for macOS development environment with standardized confi
 ## 📋 What's Included
 
 ### Command Line Tools
-- AWS CLI, Git, NVM, Python 3.13, Wget, Yarn
+- AWS CLI, Git, NVM, Python 3.13, uv (Python package manager), Wget, Yarn
 - Powerlevel10k theme
 - Zsh plugins (autosuggestions, completions, syntax highlighting)
 
@@ -13,7 +13,7 @@ Automated setup script for macOS development environment with standardized confi
 - **Browsers:** Brave, Chrome, Firefox
 - **Editors:** Cursor, Visual Studio Code
 - **Productivity:** Caffeine, Flow, Flux, Notion, Rectangle
-- **Development:** Anaconda, iTerm2, pgAdmin 4, Postgres.app, Postman
+- **Development:** iTerm2, pgAdmin 4, Postgres.app, Postman
 - **Font:** MesloLGS NF (Nerd Font)
 - **Communication:** Slack
 

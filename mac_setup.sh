@@ -131,6 +131,7 @@ FORMULAE=(
     "nvm"
     "powerlevel10k"
     "python@3.13"
+    "uv"
     "wget"
     "yarn"
     "zsh-autosuggestions"
@@ -161,7 +162,6 @@ done
 print_section "5. Homebrew Casks (GUI Applications)"
 
 CASKS=(
-    "anaconda"
     "brave-browser"
     "caffeine"
     "cursor"
