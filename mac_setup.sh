@@ -2,11 +2,10 @@
 
 ###############################################################################
 # Mac Development Environment Setup Script
-# Generated: October 17, 2025
-# Description: Automated setup script for macOS development environment
+# Automated setup for macOS development environment with robust error handling
 ###############################################################################
 
-# Don't exit on errors - we want to continue even if some commands fail
+# Continue on errors - individual command failures won't stop the script
 set +e
 
 # Color codes for output
@@ -124,16 +123,16 @@ done
 print_section "4. Homebrew Formulae (Command Line Tools)"
 
 FORMULAE=(
-    "awscli"                # AWS Command Line Interface
-    "git"                   # Version control system
-    "nvm"                   # Node Version Manager
-    "powerlevel10k"         # Zsh theme
-    "python@3.13"           # Python programming language
-    "wget"                  # Internet file retriever
-    "yarn"                  # JavaScript package manager
-    "zsh-autosuggestions"   # Fish-like autosuggestions for Zsh
-    "zsh-completions"       # Additional Zsh completions
-    "zsh-syntax-highlighting" # Fish-like syntax highlighting for Zsh
+    "awscli"
+    "git"
+    "nvm"
+    "powerlevel10k"
+    "python@3.13"
+    "wget"
+    "yarn"
+    "zsh-autosuggestions"
+    "zsh-completions"
+    "zsh-syntax-highlighting"
 )
 
 print_info "Installing formula packages..."
@@ -159,23 +158,23 @@ done
 print_section "5. Homebrew Casks (GUI Applications)"
 
 CASKS=(
-    "anaconda"              # Data science platform
-    "brave-browser"         # Privacy-focused web browser
-    "firefox"               # Web browser
-    "caffeine"              # Prevent Mac from sleeping
-    "cursor"                # AI-powered code editor
-    "flow"                  # Task management app
-    "flux"                  # Screen color temperature adjuster
-    "font-meslo-lg-nerd-font"  # Nerd Font for terminal
-    "google-chrome"         # Web browser
-    "iterm2"                # Terminal emulator
-    "notion"                # Note-taking and collaboration
-    "pgadmin4"              # PostgreSQL admin tool
-    "postgres-unofficial"   # PostgreSQL database server (Postgres.app)
-    "postman"               # API development tool
-    "rectangle"             # Window management tool
-    "slack"                 # Team communication
-    "visual-studio-code"    # Code editor
+    "anaconda"
+    "brave-browser"
+    "caffeine"
+    "cursor"
+    "firefox"
+    "flow"
+    "flux"
+    "font-meslo-lg-nerd-font"
+    "google-chrome"
+    "iterm2"
+    "notion"
+    "pgadmin4"
+    "postgres-unofficial"
+    "postman"
+    "rectangle"
+    "slack"
+    "visual-studio-code"
 )
 
 print_info "Installing cask applications..."
@@ -264,33 +263,13 @@ fi
 ###############################################################################
 print_section "8. Node Version Manager (NVM)"
 
-# Create NVM directory if it doesn't exist
+# Create NVM directory
 if [ ! -d "$HOME/.nvm" ]; then
-    if mkdir -p "$HOME/.nvm" 2>&1; then
-        print_success "NVM directory created"
-    else
-        print_warning "Failed to create NVM directory"
-    fi
+    mkdir -p "$HOME/.nvm" 2>&1 && print_success "NVM directory created" || print_warning "Failed to create NVM directory"
 fi
 
-# Add NVM to shell configuration
-NVM_CONFIG='
-# NVM Configuration
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-'
-
-if ! grep -q "NVM Configuration" "$HOME/.zshrc" 2>/dev/null; then
-    print_info "Adding NVM configuration to .zshrc..."
-    if echo "$NVM_CONFIG" >> "$HOME/.zshrc" 2>&1; then
-        print_success "NVM configuration added"
-    else
-        print_warning "Failed to add NVM configuration"
-    fi
-else
-    print_success "NVM already configured in .zshrc"
-fi
+# NVM is already configured in zshrc-template, no need to add it again
+print_success "NVM configured in .zshrc (via template)"
 
 # Source NVM for current session
 export NVM_DIR="$HOME/.nvm"
@@ -302,10 +281,10 @@ if command -v nvm &> /dev/null; then
     if nvm install --lts 2>&1 && nvm use --lts 2>&1; then
         print_success "Node.js LTS installed"
     else
-        print_warning "Failed to install Node.js LTS. Please run 'nvm install --lts' manually after restarting terminal."
+        print_warning "Failed to install Node.js. Run 'nvm install --lts' manually after restarting terminal."
     fi
 else
-    print_warning "NVM not available in current session. Please restart your terminal and run: nvm install --lts"
+    print_warning "NVM not available in current session. Restart terminal and run: nvm install --lts"
 fi
 
 ###############################################################################
@@ -329,36 +308,26 @@ print_section "10. macOS System Preferences"
 
 print_info "Configuring macOS system preferences..."
 
-# Show hidden files in Finder
-defaults write com.apple.finder AppleShowAllFiles -bool true 2>/dev/null || print_warning "Failed to set AppleShowAllFiles"
+# Finder settings
+defaults write com.apple.finder AppleShowAllFiles -bool true 2>/dev/null
+defaults write com.apple.finder ShowPathbar -bool true 2>/dev/null
+defaults write com.apple.finder ShowStatusBar -bool true 2>/dev/null
 
-# Show path bar in Finder
-defaults write com.apple.finder ShowPathbar -bool true 2>/dev/null || print_warning "Failed to set ShowPathbar"
+# Disable app quarantine dialog
+defaults write com.apple.LaunchServices LSQuarantine -bool false 2>/dev/null
 
-# Show status bar in Finder
-defaults write com.apple.finder ShowStatusBar -bool true 2>/dev/null || print_warning "Failed to set ShowStatusBar"
+# Keyboard settings
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3 2>/dev/null
+defaults write NSGlobalDomain KeyRepeat -int 2 2>/dev/null
+defaults write NSGlobalDomain InitialKeyRepeat -int 15 2>/dev/null
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false 2>/dev/null
 
-# Disable the "Are you sure you want to open this application?" dialog
-defaults write com.apple.LaunchServices LSQuarantine -bool false 2>/dev/null || print_warning "Failed to disable LSQuarantine"
-
-# Enable full keyboard access for all controls
-defaults write NSGlobalDomain AppleKeyboardUIMode -int 3 2>/dev/null || print_warning "Failed to set AppleKeyboardUIMode"
-
-# Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 2 2>/dev/null || print_warning "Failed to set KeyRepeat"
-defaults write NSGlobalDomain InitialKeyRepeat -int 15 2>/dev/null || print_warning "Failed to set InitialKeyRepeat"
-
-# Disable auto-correct
-defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false 2>/dev/null || print_warning "Failed to disable auto-correct"
-
-# Save screenshots to Downloads folder
-defaults write com.apple.screencapture location -string "${HOME}/Downloads" 2>/dev/null || print_warning "Failed to set screenshot location"
-
-# Save screenshots in PNG format
-defaults write com.apple.screencapture type -string "png" 2>/dev/null || print_warning "Failed to set screenshot format"
+# Screenshot settings
+defaults write com.apple.screencapture location -string "${HOME}/Downloads" 2>/dev/null
+defaults write com.apple.screencapture type -string "png" 2>/dev/null
 
 print_success "macOS preferences configured"
-print_warning "Some changes require logging out or restarting Finder"
+print_warning "Some changes require restarting Finder: killall Finder"
 
 ###############################################################################
 # 11. Cleanup and Final Steps
@@ -388,20 +357,14 @@ echo ""
 print_success "Your Mac development environment is now set up!"
 echo ""
 
-# Display installation summary
+# Installation summary
 echo "Installation Summary:"
-if [ $PACKAGES_INSTALLED -gt 0 ]; then
-    print_success "Packages installed: $PACKAGES_INSTALLED"
-fi
-if [ $PACKAGES_SKIPPED -gt 0 ]; then
-    print_info "Packages already installed (skipped): $PACKAGES_SKIPPED"
-fi
-if [ $PACKAGES_FAILED -gt 0 ]; then
-    print_warning "Packages that failed: $PACKAGES_FAILED"
-fi
+[ $PACKAGES_INSTALLED -gt 0 ] && print_success "Packages installed: $PACKAGES_INSTALLED"
+[ $PACKAGES_SKIPPED -gt 0 ] && print_info "Packages skipped (already installed): $PACKAGES_SKIPPED"
+[ $PACKAGES_FAILED -gt 0 ] && print_warning "Packages failed: $PACKAGES_FAILED"
 
 echo ""
-echo "Installed software versions:"
+echo "Installed versions:"
 echo "  • Homebrew:    $(brew --version 2>/dev/null | head -n 1 || echo 'Not available')"
 echo "  • Git:         $(git --version 2>/dev/null || echo 'Not available')"
 echo "  • Python:      $(python3 --version 2>/dev/null || echo 'Not available')"
@@ -409,20 +372,16 @@ echo "  • AWS CLI:     $(aws --version 2>/dev/null | cut -d' ' -f1 || echo 'No
 echo "  • Zsh:         $(zsh --version 2>/dev/null || echo 'Not available')"
 echo ""
 print_warning "Next steps:"
-echo "  1. Restart your terminal or run: source ~/.zshrc"
-echo "  2. Configure Git with your name and email"
-echo "  3. Install Node.js LTS: nvm install --lts"
-echo "  4. Configure AWS CLI: aws configure"
-echo "  5. Restart Finder to apply macOS preferences: killall Finder"
+echo "  1. Restart terminal or run: source ~/.zshrc"
+echo "  2. Configure Git: git config --global user.name/user.email"
+echo "  3. Install Node.js: nvm install --lts"
+echo "  4. Configure AWS: aws configure"
+echo "  5. Restart Finder: killall Finder"
 echo ""
-print_info "To update all packages in the future, run:"
-echo "  brew update && brew upgrade && brew cleanup"
+print_info "To update all packages: brew update && brew upgrade && brew cleanup"
 echo ""
 
-if [ $PACKAGES_FAILED -gt 0 ]; then
-    print_warning "Note: Some packages failed to install. Check the output above for details."
-    echo ""
-fi
+[ $PACKAGES_FAILED -gt 0 ] && print_warning "Some packages failed. Check output above for details." && echo ""
 
 print_success "Happy coding! 🚀"
 
