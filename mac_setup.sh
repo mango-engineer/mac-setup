@@ -20,6 +20,9 @@ PACKAGES_INSTALLED=0
 PACKAGES_SKIPPED=0
 PACKAGES_FAILED=0
 
+# Get script directory for referencing files in the repo
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Function to print colored output
 print_success() {
     echo -e "${GREEN}✓ $1${NC}"
@@ -195,9 +198,104 @@ for cask in "${CASKS[@]}"; do
 done
 
 ###############################################################################
-# 6. Install Oh My Zsh & Themes
+# 6. Configure Cursor Extensions and Settings
 ###############################################################################
-print_section "6. Oh My Zsh & Themes"
+print_section "6. Cursor Extensions and Settings"
+
+# Path to extension list and settings files in the repo
+CURSOR_EXTENSIONS_FILE="$SCRIPT_DIR/cursor-extensions.txt"
+CURSOR_SETTINGS_FILE="$SCRIPT_DIR/cursor-settings.json"
+CURSOR_KEYBINDINGS_FILE="$SCRIPT_DIR/cursor-keybindings.json"
+CURSOR_USER_DIR="$HOME/Library/Application Support/Cursor/User"
+
+# Check if Cursor is installed
+if command -v cursor &> /dev/null || [ -d "/Applications/Cursor.app" ]; then
+    print_success "Cursor is installed"
+    
+    # Install extensions
+    if [ -f "$CURSOR_EXTENSIONS_FILE" ]; then
+        print_info "Installing Cursor extensions..."
+        EXTENSIONS_INSTALLED=0
+        EXTENSIONS_FAILED=0
+        
+        while IFS= read -r extension || [ -n "$extension" ]; do
+            # Skip empty lines
+            [ -z "$extension" ] && continue
+            
+            # Check if extension is already installed
+            if cursor --list-extensions 2>/dev/null | grep -q "^${extension}$"; then
+                print_success "Extension already installed: $extension"
+            else
+                print_info "Installing extension: $extension"
+                if cursor --install-extension "$extension" --force 2>&1; then
+                    print_success "Installed extension: $extension"
+                    ((EXTENSIONS_INSTALLED++))
+                else
+                    print_error "Failed to install extension: $extension"
+                    ((EXTENSIONS_FAILED++))
+                fi
+            fi
+        done < "$CURSOR_EXTENSIONS_FILE"
+        
+        [ $EXTENSIONS_INSTALLED -gt 0 ] && print_success "Installed $EXTENSIONS_INSTALLED new extension(s)"
+        [ $EXTENSIONS_FAILED -gt 0 ] && print_warning "Failed to install $EXTENSIONS_FAILED extension(s)"
+    else
+        print_warning "cursor-extensions.txt not found in repository"
+        print_info "To export extensions: cursor --list-extensions > cursor-extensions.txt"
+    fi
+    
+    # Restore settings
+    if [ -f "$CURSOR_SETTINGS_FILE" ]; then
+        # Create Cursor User directory if it doesn't exist
+        mkdir -p "$CURSOR_USER_DIR" 2>/dev/null
+        
+        # Backup existing settings if they exist
+        if [ -f "$CURSOR_USER_DIR/settings.json" ]; then
+            BACKUP_FILE="$CURSOR_USER_DIR/settings.json.backup.$(date +%Y%m%d_%H%M%S)"
+            print_info "Backing up existing Cursor settings to: ${BACKUP_FILE##*/}"
+            cp "$CURSOR_USER_DIR/settings.json" "$BACKUP_FILE" 2>/dev/null
+        fi
+        
+        print_info "Restoring Cursor settings..."
+        if cp "$CURSOR_SETTINGS_FILE" "$CURSOR_USER_DIR/settings.json" 2>&1; then
+            print_success "Cursor settings restored"
+        else
+            print_error "Failed to restore Cursor settings"
+        fi
+    else
+        print_warning "cursor-settings.json not found in repository"
+    fi
+    
+    # Restore keybindings
+    if [ -f "$CURSOR_KEYBINDINGS_FILE" ]; then
+        # Create Cursor User directory if it doesn't exist
+        mkdir -p "$CURSOR_USER_DIR" 2>/dev/null
+        
+        # Backup existing keybindings if they exist
+        if [ -f "$CURSOR_USER_DIR/keybindings.json" ]; then
+            BACKUP_FILE="$CURSOR_USER_DIR/keybindings.json.backup.$(date +%Y%m%d_%H%M%S)"
+            print_info "Backing up existing Cursor keybindings to: ${BACKUP_FILE##*/}"
+            cp "$CURSOR_USER_DIR/keybindings.json" "$BACKUP_FILE" 2>/dev/null
+        fi
+        
+        print_info "Restoring Cursor keybindings..."
+        if cp "$CURSOR_KEYBINDINGS_FILE" "$CURSOR_USER_DIR/keybindings.json" 2>&1; then
+            print_success "Cursor keybindings restored"
+        else
+            print_error "Failed to restore Cursor keybindings"
+        fi
+    else
+        print_warning "cursor-keybindings.json not found in repository"
+    fi
+else
+    print_warning "Cursor not installed yet. Extensions and settings will be skipped."
+    print_info "Run this script again after Cursor is installed to configure extensions."
+fi
+
+###############################################################################
+# 7. Install Oh My Zsh & Themes
+###############################################################################
+print_section "7. Oh My Zsh & Themes"
 
 if [ -d "$HOME/.oh-my-zsh" ]; then
     print_success "Oh My Zsh already installed"
@@ -225,12 +323,11 @@ else
 fi
 
 ###############################################################################
-# 7. Configure .zshrc (Standardized Configuration)
+# 8. Configure .zshrc (Standardized Configuration)
 ###############################################################################
-print_section "7. Configure .zshrc"
+print_section "8. Configure .zshrc"
 
 # Path to template in the repo
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ZSHRC_TEMPLATE="$SCRIPT_DIR/zshrc-template"
 
 if [ -f "$ZSHRC_TEMPLATE" ]; then
@@ -259,9 +356,9 @@ else
 fi
 
 ###############################################################################
-# 8. Configure NVM (Node Version Manager)
+# 9. Configure NVM (Node Version Manager)
 ###############################################################################
-print_section "8. Node Version Manager (NVM)"
+print_section "9. Node Version Manager (NVM)"
 
 # Create NVM directory
 if [ ! -d "$HOME/.nvm" ]; then
@@ -288,9 +385,9 @@ else
 fi
 
 ###############################################################################
-# 9. Configure Git
+# 10. Configure Git
 ###############################################################################
-print_section "9. Git Configuration"
+print_section "10. Git Configuration"
 
 print_info "Current Git configuration:"
 git config --global user.name 2>/dev/null || print_warning "Git user.name not set"
@@ -302,9 +399,9 @@ echo "  git config --global user.name \"Your Name\""
 echo "  git config --global user.email \"your.email@example.com\""
 
 ###############################################################################
-# 10. macOS System Preferences
+# 11. macOS System Preferences
 ###############################################################################
-print_section "10. macOS System Preferences"
+print_section "11. macOS System Preferences"
 
 print_info "Configuring macOS system preferences..."
 
@@ -330,9 +427,9 @@ print_success "macOS preferences configured"
 print_warning "Some changes require restarting Finder: killall Finder"
 
 ###############################################################################
-# 11. Cleanup and Final Steps
+# 12. Cleanup and Final Steps
 ###############################################################################
-print_section "11. Cleanup"
+print_section "12. Cleanup"
 
 print_info "Running Homebrew cleanup..."
 if brew cleanup 2>&1; then

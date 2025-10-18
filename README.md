@@ -20,6 +20,7 @@ Automated setup script for macOS development environment with standardized confi
 ### Configuration
 - Oh My Zsh with standardized `.zshrc` template
 - NVM for Node.js version management
+- Cursor extensions and settings backup/restore
 - Developer-friendly macOS system settings
 - Automatic backups of existing configurations
 
@@ -67,6 +68,11 @@ p10k configure
 - Your existing `.zshrc` is backed up to `~/.zshrc.backup.TIMESTAMP`
 - Add personal configs to the bottom of `~/.zshrc` (under "Personal Customizations")
 
+### Cursor IDE Configuration
+- Extensions are automatically installed from `cursor-extensions.txt`
+- Settings and keybindings are restored from backup files
+- Existing configurations are backed up before restoration
+
 ## ✨ Features
 
 - Idempotent (safe to run multiple times)
@@ -88,6 +94,20 @@ brew search <package-name>
 # Then commit
 git add mac_setup.sh
 git commit -m "Add <package-name>"
+```
+
+### Update Cursor Configuration
+```bash
+# Export current extensions
+cursor --list-extensions > cursor-extensions.txt
+
+# Backup current settings
+cp "$HOME/Library/Application Support/Cursor/User/settings.json" cursor-settings.json
+cp "$HOME/Library/Application Support/Cursor/User/keybindings.json" cursor-keybindings.json
+
+# Commit changes
+git add cursor-*.txt cursor-*.json
+git commit -m "Update Cursor configuration"
 ```
 
 ### Remove Software
