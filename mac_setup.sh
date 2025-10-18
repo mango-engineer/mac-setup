@@ -196,9 +196,9 @@ for cask in "${CASKS[@]}"; do
 done
 
 ###############################################################################
-# 6. Install Oh My Zsh
+# 6. Install Oh My Zsh & Themes
 ###############################################################################
-print_section "6. Oh My Zsh"
+print_section "6. Oh My Zsh & Themes"
 
 if [ -d "$HOME/.oh-my-zsh" ]; then
     print_success "Oh My Zsh already installed"
@@ -208,6 +208,20 @@ else
         print_success "Oh My Zsh installed"
     else
         print_warning "Oh My Zsh installation had issues, but continuing..."
+    fi
+fi
+
+# Install Spaceship theme (optional alternative to Powerlevel10k)
+print_info "Installing Spaceship theme (optional)..."
+SPACESHIP_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/spaceship-prompt"
+if [ -d "$SPACESHIP_DIR" ]; then
+    print_success "Spaceship theme already installed"
+else
+    if git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$SPACESHIP_DIR" --depth=1 2>&1; then
+        ln -sf "$SPACESHIP_DIR/spaceship.zsh-theme" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/spaceship.zsh-theme" 2>&1
+        print_success "Spaceship theme installed (to use: edit ~/.zshrc and set ZSH_THEME='spaceship')"
+    else
+        print_warning "Failed to install Spaceship theme (optional, not critical)"
     fi
 fi
 
