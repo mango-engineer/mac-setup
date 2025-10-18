@@ -1,302 +1,131 @@
 # Mac Development Environment Setup
 
-This repository contains an automated setup script for macOS development environment based on your current system configuration.
+Automated setup script for macOS development environment with standardized configuration.
 
 ## 📋 What's Included
 
-### Command Line Tools (Homebrew Formulae)
-- **AWS CLI** - Amazon Web Services Command Line Interface
-- **Git** - Distributed version control system
-- **NVM** - Node Version Manager
-- **Powerlevel10k** - Beautiful and fast Zsh theme
-- **Python 3.13** - Python programming language
-- **Wget** - Network downloader
-- **Yarn** - JavaScript package manager
-- **Zsh Autosuggestions** - Fish-like autosuggestions for Zsh
-- **Zsh Completions** - Additional completion definitions for Zsh
-- **Zsh Syntax Highlighting** - Fish-like syntax highlighting for Zsh
+### Command Line Tools
+- AWS CLI, Git, NVM, Python 3.13, Wget, Yarn
+- Powerlevel10k theme
+- Zsh plugins (autosuggestions, completions, syntax highlighting)
 
-### GUI Applications (Homebrew Casks)
-- **Anaconda** - Data science platform with Python and R
-- **Brave Browser** - Privacy-focused web browser
-- **Firefox** - Open-source web browser
-- **Caffeine** - Prevents Mac from sleeping
-- **Cursor** - AI-powered code editor
-- **Flow** - Task management application
-- **Flux** - Adjusts screen color temperature
-- **Google Chrome** - Web browser
-- **iTerm2** - Advanced terminal emulator
-- **MesloLGS NF** - Nerd Font for terminal
-- **Notion** - All-in-one workspace
-- **pgAdmin 4** - PostgreSQL database management
-- **Postgres.app** - PostgreSQL database server for macOS
-- **Postman** - API development platform
-- **Rectangle** - Window management utility
-- **Slack** - Team collaboration tool
-- **Visual Studio Code** - Source code editor
+### GUI Applications
+- **Browsers:** Brave, Chrome, Firefox
+- **Editors:** Cursor, Visual Studio Code
+- **Productivity:** Caffeine, Flow, Flux, Notion, Rectangle
+- **Development:** Anaconda, iTerm2, pgAdmin 4, Postgres.app, Postman
+- **Font:** MesloLGS NF (Nerd Font)
+- **Communication:** Slack
 
-### Additional Configuration
-- **Oh My Zsh** - Zsh framework for managing configurations
-- **Standardized .zshrc** - Consistent shell configuration across all installations
-- **Zsh Plugins** - Autosuggestions and syntax highlighting for enhanced terminal experience
-- **NVM Configuration** - Automatic Node.js version management
-- **macOS System Preferences** - Developer-friendly system settings
-- **Homebrew Taps** - Third-party repositories (romkatv/powerlevel10k)
+### Configuration
+- Oh My Zsh with standardized `.zshrc` template
+- NVM for Node.js version management
+- Developer-friendly macOS system settings
+- Automatic backups of existing configurations
 
 ## 🚀 Usage
 
-### Initial Setup (New Mac)
-
-1. **Clone this repository:**
-   ```bash
-   cd ~/Desktop
-   git clone <your-repo-url> mac-setup
-   cd mac-setup
-   ```
-
-2. **Make the script executable:**
-   ```bash
-   chmod +x mac_setup.sh
-   ```
-
-3. **Run the setup script:**
-   ```bash
-   ./mac_setup.sh
-   ```
-
-4. **Follow the post-installation steps printed at the end**
-
-### Update Existing Installation
-
-To update all packages on your Mac:
-
+### Initial Setup
 ```bash
-# Update Homebrew and all packages
+cd ~/Desktop
+git clone <your-repo-url> mac-setup
+cd mac-setup
+chmod +x mac_setup.sh
+./mac_setup.sh
+```
+
+### Update Everything
+```bash
 brew update && brew upgrade && brew cleanup
-
-# Update Oh My Zsh
 omz update
-
-# Update NVM and Node.js
 nvm install --lts --latest-npm
 ```
 
-## 🔧 Manual Configuration Steps
+## 🔧 Post-Installation
 
-After running the script, you'll need to configure a few things manually:
+After setup completes, configure these manually:
 
-### 1. Configure Git
 ```bash
+# Git
 git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"
-```
 
-### 2. Configure AWS CLI
-```bash
+# AWS CLI
 aws configure
-```
 
-### 3. Install Node.js via NVM
-```bash
-# Restart your terminal first, then:
+# Node.js (restart terminal first)
 nvm install --lts
-nvm use --lts
-```
 
-### 4. Configure Powerlevel10k Theme
-```bash
-# Restart your terminal and follow the configuration wizard
+# Powerlevel10k theme (restart terminal, follow wizard)
 p10k configure
 ```
 
-### 5. Verify .zshrc Configuration
-The setup script automatically installs a standardized `.zshrc` configuration:
+### iTerm2 Font
+- Preferences → Profiles → Text → Font: "MesloLGS NF"
+
+### Shell Customization
 - Your existing `.zshrc` is backed up to `~/.zshrc.backup.TIMESTAMP`
-- A new standardized `.zshrc` is installed from the template
-- All users will have the same shell configuration
+- Add personal configs to the bottom of `~/.zshrc` (under "Personal Customizations")
 
-To customize your shell, add your personal configurations at the bottom of `~/.zshrc` under the "Personal Customizations" section.
+## ✨ Features
 
-### 6. iTerm2 Font Configuration
-- Open iTerm2 → Preferences → Profiles → Text
-- Set Font to "MesloLGS NF" (already installed via Homebrew)
+- Idempotent (safe to run multiple times)
+- Standardized `.zshrc` across all installations
+- Automatic backups before changes
+- Robust error handling (continues on failures)
+- Skips already installed packages
+- Color-coded progress output
+- Installation summary report
 
-### 7. Using Zsh Plugins
-After restarting your terminal, you'll have these features:
+## 📦 Managing Packages
 
-**Zsh Autosuggestions:**
-- As you type, suggestions appear in gray
-- Press `→` (right arrow) or `End` to accept the full suggestion
-- Press `Ctrl+→` to accept one word at a time
-- Based on your command history
-
-**Zsh Syntax Highlighting:**
-- Valid commands appear in green as you type
-- Invalid commands appear in red
-- Helps catch typos before running commands
-- Highlights paths, options, and strings with different colors
-
-## 📝 Script Features
-
-- ✅ **Idempotent** - Safe to run multiple times without issues
-- ✅ **Standardized configuration** - Ensures consistent `.zshrc` across all Macs
-- ✅ **Automatic backups** - Backs up existing configurations before changes
-- ✅ **Robust error handling** - Continues even if individual packages fail
-- ✅ **Smart detection** - Skips already installed packages automatically
-- ✅ **Color-coded output** - Easy to follow progress with visual feedback
-- ✅ **Installation summary** - Shows what was installed, skipped, or failed
-- ✅ **Automatic updates** - Updates Homebrew before installing
-- ✅ **System optimization** - Configures developer-friendly macOS settings
-- ✅ **Non-interactive** - Runs without user prompts
-- ✅ **Safe execution** - Never exits on errors, always completes the setup
-
-## 🔄 Keeping Your System Updated
-
-### Daily/Weekly Updates
+### Add New Software
 ```bash
-# Quick update of all Homebrew packages
-brew update && brew upgrade
+# Find package
+brew search <package-name>
+
+# Edit mac_setup.sh: add to FORMULAE (CLI) or CASKS (GUI)
+# Then commit
+git add mac_setup.sh
+git commit -m "Add <package-name>"
 ```
 
-### Monthly Maintenance
+### Remove Software
 ```bash
-# Full cleanup and maintenance
-brew update
-brew upgrade
-brew cleanup
-brew doctor
+brew uninstall <formula-name>              # CLI tool
+brew uninstall --cask <cask-name>          # GUI app
+brew autoremove                             # Remove unused dependencies
 ```
 
-### Update Node.js
+### Check Installed
 ```bash
-nvm install --lts --latest-npm
-nvm alias default lts/*
+brew list --formula    # CLI tools
+brew list --cask       # GUI apps
+nvm list              # Node.js versions
 ```
-
-## 📦 Adding New Software
-
-To add new software to your setup script:
-
-1. **Find the package name:**
-   ```bash
-   brew search <package-name>
-   ```
-
-2. **Edit `mac_setup.sh`:**
-   - Add to `FORMULAE` array for CLI tools
-   - Add to `CASKS` array for GUI applications
-
-3. **Commit your changes:**
-   ```bash
-   git add mac_setup.sh
-   git commit -m "Add new package: <package-name>"
-   ```
-
-## 🗑️ Uninstalling Software
-
-To remove a package:
-
-```bash
-# Remove a formula (CLI tool)
-brew uninstall <formula-name>
-
-# Remove a cask (GUI app)
-brew uninstall --cask <cask-name>
-
-# Remove unused dependencies
-brew autoremove
-```
-
-## 📊 Check Current Installation
-
-To see what's currently installed:
-
-```bash
-# List all formulae
-brew list --formula
-
-# List all casks
-brew list --cask
-
-# List all taps
-brew tap
-
-# Check Node.js versions
-nvm list
-```
-
-## 🛡️ Error Handling
-
-The setup script includes **robust error handling** to ensure it never fails unexpectedly:
-
-- ✅ **Detects already installed packages** - Skips them automatically
-- ✅ **Continues on errors** - One failure won't stop the entire setup
-- ✅ **Tracks progress** - Shows summary of installed/skipped/failed packages
-- ✅ **Idempotent design** - Safe to run multiple times
-- ✅ **Clear feedback** - Color-coded messages show exactly what's happening
 
 ## 🐛 Troubleshooting
 
-### Homebrew Issues
 ```bash
-# Check for problems
+# Homebrew issues
 brew doctor
 
-# Fix common issues
-brew update-reset
-```
-
-### Permission Issues
-```bash
-# Fix Homebrew permissions (if needed)
+# Permission issues
 sudo chown -R $(whoami) $(brew --prefix)/*
-```
 
-### Shell Configuration Issues
-```bash
-# Reset shell configuration
-source ~/.zshrc
+# Shell issues
+source ~/.zshrc      # Reload config
+exec zsh             # Restart shell
 
-# Or restart terminal
-exec zsh
-```
-
-### Package Installation Failed
-
-If specific packages fail to install:
-
-```bash
-# Try installing manually
-brew install <package-name>
-
-# For casks
-brew install --cask <cask-name>
-
-# Check Homebrew logs
+# Failed package
 brew install --verbose <package-name>
 ```
 
-The script will show which packages failed in the summary, so you can install them manually if needed.
+## 📚 Resources
 
-## 📚 Additional Resources
-
-- [Homebrew Documentation](https://docs.brew.sh/)
-- [Oh My Zsh Documentation](https://ohmyz.sh/)
-- [NVM Documentation](https://github.com/nvm-sh/nvm)
-- [Powerlevel10k Documentation](https://github.com/romkatv/powerlevel10k)
-
-## 📄 License
-
-This is a personal setup script. Feel free to modify and use it for your own needs.
-
-## 🤝 Contributing
-
-This is a personal configuration, but you're welcome to fork and adapt it for your own use!
+- [Homebrew](https://docs.brew.sh/) • [Oh My Zsh](https://ohmyz.sh/) • [NVM](https://github.com/nvm-sh/nvm) • [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
 
 ---
 
-**Generated:** October 17, 2025  
-**Last Updated:** $(date)
-
-💡 **Tip:** Commit changes to this script to track your development environment over time!
+💡 **Tip:** Commit changes to track your environment over time!
 
