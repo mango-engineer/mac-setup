@@ -54,7 +54,7 @@ source $ZSH/oh-my-zsh.sh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Autosuggestion customization
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#663399,standout"  # Purple color for suggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"                  # Soft gray - soothing and easy on eyes
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"                    # Only suggest for short commands
 ZSH_AUTOSUGGEST_USE_ASYNC=1                             # Non-blocking suggestions
 
