@@ -204,16 +204,23 @@ print_section "6. Python Installation (via uv)"
 if command -v uv &> /dev/null; then
     print_success "uv is installed"
     
-    # Install latest Python version
-    print_info "Installing latest Python version via uv..."
-    if uv python install 2>&1; then
-        print_success "Python installed via uv"
-        
-        # Show installed Python versions
+    # Check if Python is already installed via uv
+    if uv python list 2>/dev/null | grep -q "cpython"; then
+        print_success "Python already installed via uv"
         print_info "Installed Python versions:"
-        uv python list 2>/dev/null || true
+        uv python list 2>/dev/null | head -5 || true
     else
-        print_warning "Failed to install Python via uv. You can install manually with: uv python install"
+        # Install latest Python version
+        print_info "Installing latest Python version via uv..."
+        if uv python install 2>&1; then
+            print_success "Python installed via uv"
+            
+            # Show installed Python versions
+            print_info "Installed Python versions:"
+            uv python list 2>/dev/null || true
+        else
+            print_warning "Failed to install Python via uv. You can install manually with: uv python install"
+        fi
     fi
 else
     print_warning "uv not available. Install it first with: brew install uv"
@@ -385,6 +392,8 @@ print_section "10. Node Version Manager (NVM)"
 # Create NVM directory
 if [ ! -d "$HOME/.nvm" ]; then
     mkdir -p "$HOME/.nvm" 2>&1 && print_success "NVM directory created" || print_warning "Failed to create NVM directory"
+else
+    print_success "NVM directory already exists"
 fi
 
 # NVM is already configured in zshrc-template, no need to add it again
@@ -396,11 +405,19 @@ export NVM_DIR="$HOME/.nvm"
 
 # Install latest LTS Node.js version
 if command -v nvm &> /dev/null; then
-    print_info "Installing Node.js LTS version..."
-    if nvm install --lts 2>&1 && nvm use --lts 2>&1; then
-        print_success "Node.js LTS installed"
+    # Check if Node.js is already installed
+    if nvm ls 2>/dev/null | grep -q "node\|v[0-9]"; then
+        print_success "Node.js already installed via nvm"
+        CURRENT_NODE=$(nvm current 2>/dev/null)
+        print_info "Current Node.js version: $CURRENT_NODE"
+        print_info "To install another version: nvm install --lts"
     else
-        print_warning "Failed to install Node.js. Run 'nvm install --lts' manually after restarting terminal."
+        print_info "Installing Node.js LTS version..."
+        if nvm install --lts 2>&1 && nvm use --lts 2>&1; then
+            print_success "Node.js LTS installed"
+        else
+            print_warning "Failed to install Node.js. Run 'nvm install --lts' manually after restarting terminal."
+        fi
     fi
 else
     print_warning "NVM not available in current session. Restart terminal and run: nvm install --lts"
