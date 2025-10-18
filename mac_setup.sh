@@ -130,7 +130,6 @@ FORMULAE=(
     "git"
     "nvm"
     "powerlevel10k"
-    "python@3.13"
     "uv"
     "wget"
     "yarn"
@@ -198,9 +197,32 @@ for cask in "${CASKS[@]}"; do
 done
 
 ###############################################################################
-# 6. Configure Cursor Extensions and Settings
+# 6. Install Python via uv
 ###############################################################################
-print_section "6. Cursor Extensions and Settings"
+print_section "6. Python Installation (via uv)"
+
+if command -v uv &> /dev/null; then
+    print_success "uv is installed"
+    
+    # Install latest Python version
+    print_info "Installing latest Python version via uv..."
+    if uv python install 2>&1; then
+        print_success "Python installed via uv"
+        
+        # Show installed Python versions
+        print_info "Installed Python versions:"
+        uv python list 2>/dev/null || true
+    else
+        print_warning "Failed to install Python via uv. You can install manually with: uv python install"
+    fi
+else
+    print_warning "uv not available. Install it first with: brew install uv"
+fi
+
+###############################################################################
+# 7. Configure Cursor Extensions and Settings
+###############################################################################
+print_section "7. Cursor Extensions and Settings"
 
 # Path to extension list and settings files in the repo
 CURSOR_EXTENSIONS_FILE="$SCRIPT_DIR/cursor-extensions.txt"
@@ -293,9 +315,9 @@ else
 fi
 
 ###############################################################################
-# 7. Install Oh My Zsh & Themes
+# 8. Install Oh My Zsh & Themes
 ###############################################################################
-print_section "7. Oh My Zsh & Themes"
+print_section "8. Oh My Zsh & Themes"
 
 if [ -d "$HOME/.oh-my-zsh" ]; then
     print_success "Oh My Zsh already installed"
@@ -323,9 +345,9 @@ else
 fi
 
 ###############################################################################
-# 8. Configure .zshrc (Standardized Configuration)
+# 9. Configure .zshrc (Standardized Configuration)
 ###############################################################################
-print_section "8. Configure .zshrc"
+print_section "9. Configure .zshrc"
 
 # Path to template in the repo
 ZSHRC_TEMPLATE="$SCRIPT_DIR/zshrc-template"
@@ -356,9 +378,9 @@ else
 fi
 
 ###############################################################################
-# 9. Configure NVM (Node Version Manager)
+# 10. Configure NVM (Node Version Manager)
 ###############################################################################
-print_section "9. Node Version Manager (NVM)"
+print_section "10. Node Version Manager (NVM)"
 
 # Create NVM directory
 if [ ! -d "$HOME/.nvm" ]; then
@@ -385,9 +407,9 @@ else
 fi
 
 ###############################################################################
-# 10. Configure Git
+# 11. Configure Git
 ###############################################################################
-print_section "10. Git Configuration"
+print_section "11. Git Configuration"
 
 print_info "Current Git configuration:"
 git config --global user.name 2>/dev/null || print_warning "Git user.name not set"
@@ -399,9 +421,9 @@ echo "  git config --global user.name \"Your Name\""
 echo "  git config --global user.email \"your.email@example.com\""
 
 ###############################################################################
-# 11. macOS System Preferences
+# 12. macOS System Preferences
 ###############################################################################
-print_section "11. macOS System Preferences"
+print_section "12. macOS System Preferences"
 
 print_info "Configuring macOS system preferences..."
 
@@ -427,9 +449,9 @@ print_success "macOS preferences configured"
 print_warning "Some changes require restarting Finder: killall Finder"
 
 ###############################################################################
-# 12. Cleanup and Final Steps
+# 13. Cleanup and Final Steps
 ###############################################################################
-print_section "12. Cleanup"
+print_section "13. Cleanup"
 
 print_info "Running Homebrew cleanup..."
 if brew cleanup 2>&1; then
@@ -464,16 +486,21 @@ echo ""
 echo "Installed versions:"
 echo "  • Homebrew:    $(brew --version 2>/dev/null | head -n 1 || echo 'Not available')"
 echo "  • Git:         $(git --version 2>/dev/null || echo 'Not available')"
-echo "  • Python:      $(python3 --version 2>/dev/null || echo 'Not available')"
+echo "  • uv:          $(uv --version 2>/dev/null || echo 'Not available')"
+echo "  • Python:      $(uv python list 2>/dev/null | grep -m1 'cpython' | awk '{print $1}' || echo 'Managed by uv')"
+echo "  • NVM:         $(nvm --version 2>/dev/null || echo 'Not available')"
+echo "  • Node.js:     $(node --version 2>/dev/null || echo 'Managed by nvm')"
 echo "  • AWS CLI:     $(aws --version 2>/dev/null | cut -d' ' -f1 || echo 'Not available')"
 echo "  • Zsh:         $(zsh --version 2>/dev/null || echo 'Not available')"
 echo ""
 print_warning "Next steps:"
 echo "  1. Restart terminal or run: source ~/.zshrc"
 echo "  2. Configure Git: git config --global user.name/user.email"
-echo "  3. Install Node.js: nvm install --lts"
-echo "  4. Configure AWS: aws configure"
-echo "  5. Restart Finder: killall Finder"
+echo "  3. Configure AWS: aws configure"
+echo "  4. Restart Finder: killall Finder"
+echo ""
+print_info "Python managed by uv - use: uv python install <version>"
+print_info "Node.js managed by nvm - already installed LTS version"
 echo ""
 print_info "To update all packages: brew update && brew upgrade && brew cleanup"
 echo ""

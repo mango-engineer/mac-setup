@@ -5,9 +5,11 @@ Automated setup script for macOS development environment with standardized confi
 ## 📋 What's Included
 
 ### Command Line Tools
-- AWS CLI, Git, NVM, Python 3.13, uv (Python package manager), Wget, Yarn
+- AWS CLI, Git, NVM, uv (Python version & package manager), Wget, Yarn
 - Powerlevel10k theme
 - Zsh plugins (autosuggestions, completions, syntax highlighting)
+- **Python:** Managed by uv (installs latest version automatically)
+- **Node.js:** Managed by nvm (installs LTS version automatically)
 
 ### GUI Applications
 - **Browsers:** Brave, Chrome, Firefox
@@ -54,12 +56,11 @@ git config --global user.email "your.email@example.com"
 # AWS CLI
 aws configure
 
-# Node.js (restart terminal first)
-nvm install --lts
-
 # Powerlevel10k theme (restart terminal, follow wizard)
 p10k configure
 ```
+
+**Note:** Python and Node.js LTS are automatically installed during setup via `uv` and `nvm`.
 
 ### iTerm2 Font
 - Preferences → Profiles → Text → Font: "MesloLGS NF"
@@ -121,7 +122,46 @@ brew autoremove                             # Remove unused dependencies
 ```bash
 brew list --formula    # CLI tools
 brew list --cask       # GUI apps
+uv python list        # Python versions
 nvm list              # Node.js versions
+```
+
+## 🐍 Python & Node Version Management
+
+### Python (via uv)
+```bash
+# List available Python versions
+uv python list --all-versions
+
+# Install specific Python version
+uv python install 3.12
+
+# Install latest Python
+uv python install
+
+# Create project with specific Python
+uv init my-project --python 3.12
+
+# Install packages
+uv pip install requests pandas numpy
+```
+
+### Node.js (via nvm)
+```bash
+# List available Node versions
+nvm ls-remote
+
+# Install specific version
+nvm install 20.10.0
+
+# Install latest LTS
+nvm install --lts
+
+# Use specific version
+nvm use 20
+
+# Set default version
+nvm alias default node
 ```
 
 ## 🐛 Troubleshooting
